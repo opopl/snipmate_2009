@@ -1,0 +1,14 @@
+snippet inc
+	[% INCLUDE ${1} %]
+snippet use
+	[% USE ${1} %]
+snippet if
+	[% IF ${1} %]
+	[% END %]
+snippet fore
+	[% FOREACH ${1} IN ${2} %]
+	[% END %]
+snippet dbi
+	[% USE DBI('dbi:mysql:dbname', 'user', 'pass') %]
+snippet dir
+	[% ${1} %]

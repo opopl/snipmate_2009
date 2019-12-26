@@ -1,0 +1,1686 @@
+# doxygen code snippets {{{
+snippet c
+	C<${1}>
+snippet b
+	B<${1}>
+snippet l
+	L<${1}>
+snippet subwarn
+	sub warn {
+		my ($self,@args)=@_;
+	
+		my $sub = $self->{sub_warn} || $self->{sub_log} ||undef;
+		$sub && $sub->(@args);
+	
+		return $self;
+	}
+	
+	sub log {
+		my ($self,@args)=@_;
+	
+		my $sub = $self->{sub_log} ||undef;
+		$sub && $sub->(@args);
+	
+		return $self;
+	}
+snippet splitn
+	my @lines=split "\n" => $text;
+snippet shx
+	use DBI;
+
+	my $shx = DBI->connect('dbi:mysql:host=localhost;port=9306;mysql_enable_utf8=1') 
+		or die "Failed to connect via DBI";
+snippet sql split
+	use SQL::SplitStatement;
+	
+	my $spl = SQL::SplitStatement->new;
+	
+	my @q = $spl->split($q);
+snippet sqlsplit
+	use SQL::SplitStatement;
+	
+	my $spl = SQL::SplitStatement->new;
+	
+	my @q = $spl->split($q);
+snippet Encode::from_to
+	[$length =] Encode::from_to($octets, FROM_ENC, TO_ENC [, CHECK])
+snippet downloadsite
+	use Data::Dumper qw(Dumper);
+	use HTML::Work;
+	use File::Spec::Functions qw(catfile);
+	use File::Find qw(find);
+	use File::Path qw(make_path remove_tree);
+
+	our $htw=HTML::Work->new();
+	
+	my $root    = 'docstore.mik.ua/orelly/perl3/tk';
+	my $proto   = 'https';
+	my $savedir = catfile(qw(c: saved html mastering_perl_tk));
+
+	$htw->download_site({
+		savedir => $savedir,
+		root    => $root,
+		bname   => 'index',
+		proto   => $proto,
+	});
+snippet useutf
+	use utf8;
+	use open qw(:std :utf8);
+	
+	use Encode::Locale;
+	use Encode;
+	use Vim::Dbi;
+	
+	if (-t) 
+	{
+		binmode(STDIN, ":encoding(console_in)");
+		binmode(STDOUT, ":encoding(console_out)");
+		binmode(STDERR, ":encoding(console_out)");
+	}
+snippet encru
+	use strict;
+	use warnings;
+	
+	use utf8;
+	use open qw(:std :utf8);
+	
+	use Encode::Locale;
+	use Encode;
+	
+	if (-t) 
+	{
+		binmode(STDIN, ":encoding(console_in)");
+		binmode(STDOUT, ":encoding(console_out)");
+		binmode(STDERR, ":encoding(console_out)");
+	}
+	
+	my $str = "Привет мир";
+	
+	print $str . "\n";
+snippet iscalar
+	=item C<$${1}> (SCALAR) ${2}
+snippet textcsv
+	use Text::CSV;
+	
+	my @rows;
+	my $csv = Text::CSV->new( { binary => 1 } )  # should set binary attribute.
+	or die "Cannot use CSV: ".Text::CSV->error_diag ();
+	
+	my $dir = ${1};
+	my $csv = catfile($dir,"${1}");
+	open my $fh, "<:encoding(utf8)", "$csv" or die "$csv: $!";
+	while ( my $row = $csv->getline( $fh ) ) {
+		push @rows, $row;
+	}
+	$csv->eof or $csv->error_diag();
+	close $fh;
+snippet dbicsv all
+	use DBI;
+
+	my $dbh = DBI->connect("dbi:CSV:", undef, undef, {
+		f_schema         => undef,
+		f_dir            => "data",
+		f_dir_search     => [],
+		f_ext            => ".csv/r",
+		f_lock           => 2,
+		f_encoding       => "utf8",
+		csv_eol          => "\r\n",
+		csv_sep_char     => ",",
+		csv_quote_char   => '"',
+		csv_escape_char  => '"',
+		csv_class        => "Text::CSV_XS",
+		csv_null         => 1,
+		csv_tables       => {
+		info => { f_file => "info.csv" }
+		},
+		RaiseError       => 1,
+		PrintError       => 1,
+		FetchHashKeyName => "NAME_lc",
+	}) or die $DBI::errstr;
+snippet dbicsv short 
+	my $dbh = DBI->connect("dbi:CSV:", undef, undef, {
+		f_dir            => "data",
+		f_ext            => ".csv/r",
+		csv_sep_char     => ",",
+		f_encoding       => "utf8",
+		RaiseError       => 1,
+		PrintError       => 1,
+		}) or die $DBI::errstr;
+snippet dbicsv sth_fetchrow_arrayref 
+	my $q=qq{
+		${1}
+	};
+	my @e   = ();
+	my $sth = $dbh->prepare ($q);
+
+	$sth->execute(@e);
+
+	while (my $row = $sth->fetchrow_arrayref) {
+		${2}
+		print Dumper($row);
+	}
+	
+	$sth->finish;
+	$dbh->disconnect;
+snippet dsn
+	$dsn="DBI:mysql:database=$db;host=localhost";
+snippet dbic mysql
+	use DBI;
+
+	my ($dsn,$db,$user,$pwd,%attr);
+	%attr=(
+		RaiseError        => 1,
+		PrintError        => 1,
+		mysql_enable_utf8 => 1,
+	);
+	$user = 'root';
+	$pwd  = '';
+	$db   = '${1}';
+
+	$dsn="DBI:mysql:database=$db;host=localhost";
+	our $dbh = DBI->connect($dsn,$user,$pwd,\%attr)
+		or die $DBI::errstr;
+snippet dbisqlite
+	use DBI;
+	my $dbh = DBI->connect("dbi:SQLite:dbname=$dbfile","","");
+snippet latextable
+	use LaTeX::Table;
+	use Number::Format qw(:subs);  # use mighty CPAN to format values
+	
+	my $header = [
+		[ 'Item:2c', '' ],
+		[ '\cmidrule(r){1-2}' ],
+		[ 'Animal', 'Description', 'Price' ],
+	];
+	
+	my $data = [
+		[ 'Gnat',      'per gram', '13.65'   ],
+		[ '',          'each',      '0.0173' ],
+		[ 'Gnu',       'stuffed',  '92.59'   ],
+		[ 'Emu',       'stuffed',  '33.33'   ],
+		[ 'Armadillo', 'frozen',    '8.99'   ],
+	];
+	
+	my $table = LaTeX::Table->new(
+	{   
+		filename    => 'prices.tex',
+		maincaption => 'Price List',
+		caption     => 'Try our special offer today!',
+		label       => 'table:prices',
+		position    => 'tbp',
+		header      => $header,
+		data        => $data,
+	}
+	);
+snippet iostring
+	use IO::String;
+
+	my $fh=IO::String->new($string);
+snippet usemytex
+	use LaTeX::Table;
+snippet usemyhtml
+	use HTML::Work;
+snippet htmlent
+	use HTML::Entities;
+
+	encode_entities(${1});
+snippet selfref
+	my($self,$ref)=@_;
+snippet usemy
+	use File::Spec::Functions qw(catfile);
+	use File::Path qw(mkpath rmtree);
+	use File::Basename qw(dirname basename);
+	use File::Slurp qw(read_file write_file);
+	use File::Copy qw(copy move);
+	use FindBin qw($Script $Bin);
+snippet uselwp
+	use LWP::UserAgent;
+snippet	dbisth
+	my ($query,$sth,@e);
+	
+	$query = qq{
+		<++>
+	};
+	$sth = $dbh->prepare($query)
+		or die $DBI::errstr;
+
+	@e=(<++>);
+	$sth->execute(@e)
+		or die $DBI::errstr;
+
+	my $fetch='fetchrow_arrayref';
+	while(my $row=$sth->$fetch()){
+		<++>;
+	}
+snippet apachemodule
+	1;
+snippet eofperl
+	perl << eof
+	eof
+snippet iptehtml
+	$self->{html_root} = $self->{DATADIR};
+	$self->{htmlfile}  = $self->datafile($df);
+
+	$self->_html_print;
+snippet he
+	HTML::Element->new(${1});
+snippet ttra
+	my $ref      = shift;
+	my $ref_argv = $self->ttrefargv_ref || {};
+	
+	for my $k (keys %$ref){
+		$ref->{$k}=$ref_argv->{$k} if defined $ref_argv->{$k};
+	}
+snippet ifshared
+	if(is_shared(${1})){
+		${2};
+	}
+snippet uh
+	my $uh=$self->{uuid_header_name} || 'X-DHQ-UUID';
+	$R->header( $uh => $uuid) if $uuid;
+
+snippet uhs
+	my $uhs=$self->{uuid_header_names} || [];
+	
+	foreach my $uh (@$uhs) { $R->header( $uh => $uuid); }
+snippet html
+	$self->htmlfile($hfile);
+	$self->_html_clear;
+	$self->_html_start;
+	$self->_html_end;
+	$self->_html_print;
+snippet logfile
+	my ($logfile) = $self->reginfo->reg_ipte_get('DebugLogFile');
+snippet wu
+	use iPTE::Windows::WMI::Util ();
+		
+	my $wu = iPTE::Windows::WMI::Util->new();
+snippet usepr
+	use Term::Prompt qw(prompt);
+snippet promptm
+	my $items=[qw( ipte dhq )];
+	my $n = prompt('m',{ 
+		title => "Types of registry entries",
+		items => $items,
+		cols  => 1,
+		rows  => 2,
+		order => 'across',
+	},'',1);
+	my $id=$items->[$n];
+snippet iptewarn
+	iPTE::Util::warn("${1}");
+snippet tmp
+	use File::Temp qw( tempfile tempdir );
+	
+	my ($fh, $tmp) = tempfile();
+snippet useff
+	use File::Find qw(find);
+snippet usefbin
+	use FindBin qw($Bin $Script);
+snippet usefsf
+	use File::Spec::Functions qw(catfile);
+snippet ipteeval
+	eval {
+		$@;
+	};
+	
+	iPTE::Util::warn($@) if $@;
+snippet requrl
+	use LWP::UserAgent;
+	use HTTP::Request;
+	
+	my $ua=LWP::UserAgent->new;
+	my $url=${1};
+	my $res = $ua->request(HTTP::Request->new(GET => $url));
+snippet dbh
+	my $database='${1}';
+	my $dbh='DBI:mysql:' . $database;
+	my $user='${2}';
+	my $password='${3}';
+	
+	my $dbh = DBI->connect($dsn, $user, $password,
+		{ RaiseError => 1, AutoCommit => 0 });
+	
+	$self->dbh( $dbh );
+snippet myselfref
+	my ($self,$ref) = @_;
+snippet tr
+	$self->trim(\$v);
+snippet varref
+	my $var = ( defined $ref->{$_} ) ? $ref->{$_} : 1;
+snippet msr
+	my ($self,$ref) = @_;
+snippet texe
+	TeX::Escape->new->escape($cell);
+snippet trim
+	s/\s*$//g;
+	s/^\s*//g;
+snippet dbhdo
+	$dbh->do(${1}) || die $dbh->errstr;
+	
+	eval { $dbh->do($query) or $self->warn($dbh->errstr,$query); };
+	if ($@) { $self->warn($@,$dbh->errstr,$query);  }
+snippet apacheprint
+	$R->print(start_html,${1},end_html);
+snippet pod2html
+	pod2html("pod2html",
+		"--podpath=lib:ext:pod:vms",
+		"--podroot=/usr/src/perl",
+		"--htmlroot=/perl/nmanual",
+		"--recurse",
+		"--infile=foo.pod",
+		"--outfile=/perl/nmanual/foo.html");
+snippet podreturn
+	=over 4
+	
+	=item * 1 if success;
+	
+	=item * 0 otherwise.
+	
+	=back
+snippet podsub
+	=head2 ${1} 
+
+	=head3 Usage
+
+	=head3 Purpose
+	
+	=cut
+snippet sthi
+	foreach my $rh (@rows) {
+		my @fields = keys %$rh;
+		my $f      = join(","   => @fields);
+		my @e      = @{$rh}{@fields};
+		my $quot   = join "," => map { '?' } @fields;
+		my $q      = qq{insert into table ( $f ) values ( $quot ) };
+		my $sth;
+		eval { $sth    = $dbh->prepare($q); };
+		if($@){ $self->warn($@,$dbh->errstr,$q); }
+		
+		eval { $sth->execute(@e) or do { $self->warn($dbh->errstr,$q,Dumper([@e])); }; };
+		if($@){ $self->warn($@,$dbh->errstr,$q,Dumper([@e])); }
+	}
+snippet sthfetch
+	my @fields = ();
+	my $f      = join(","   => @fields);
+	my @e      = ();
+	my $q      = qq{select $f from $table};
+	my $sth;
+	eval { $sth    = $dbh->prepare($q) or do { $self->warn($q,$dbh->errstr)}; };
+	if($@){ $self->warn($@,$dbh->errstr,$q); }
+	
+	eval { $sth->execute(@e) or do { $self->warn($dbh->errstr,$q,Dumper([@e])); }; };
+	if($@){ $self->warn($@,$dbh->errstr,$q,Dumper([@e])); }
+	
+	my $fetch='fetchrow_arrayref';
+	while(my $row=$sth->$fetch){
+		${1};
+	}	
+snippet sth
+	my $dbh    = $self->dbh;
+	my @fields = qw();
+	my @e=();
+	my $f      = join(",",map { '`'.$_.'`'} @fields);
+	my $q      = qq{select $f from `<++>`};
+	my $sth    = $dbh->prepare($q);
+	
+	eval { $sth->execute(@e) or do { $self->warn($dbh->errstr,$q,@e); }; } 
+	if($@){ self->warn($@,$dbh->errstr,$q); }
+snippet fetch
+	my $dbh    = $self->dbh;
+	my @fields = qw(<++>);
+	my $f      = join(",",map { '`'.$_.'`'} @fields);
+	my $q      = qq{select $f from `<++>`};
+	my $sth    = $dbh->prepare($q);
+	$sth->execute();
+
+	while (my $row=$sth->fetchrow_hashref()) {
+	}
+snippet find
+	use File::Find qw(find);
+	
+	my @files;
+	my @exts=qw();
+	my @dirs;
+	push @dirs,;
+	
+	find({ 
+		wanted => sub { 
+		foreach my $ext (@exts) {
+			if (/\.$ext$/) {
+				push @files,$File::Find::name;
+			}
+		}
+		} 
+	},@dirs
+	);
+snippet exportmain
+	our @ISA     = qw(Exporter);
+	our @EXPORT_OK = qw( main);
+	our @EXPORT  = qw( );
+	our $VERSION = '0.01';
+snippet slogcaller
+	$self->log((caller(0))[3]);
+snippet subname
+	(caller(0))[3]
+snippet tkmw
+	use Tk;
+	use WidgetDemo;
+	
+	our $MW=MainWindow->new;
+	$MW->geometry("400x800");
+snippet tkpack 
+	->pack(-side => 'top', -fill => 'x');
+snippet ppi
+	use PPI;
+	use Carp;
+	
+	my $Document = PPI::Document->new($file) 
+		or croak "Failed to PPI::Document->new for file: $file";
+	
+	for my $sub ( @{ $Document->find('PPI::Statement::Sub') || [] } ) {
+		unless ( $sub->forward ) {
+			push(@subnames,$sub->name);
+			$sublines{ $sub->name } = $sub->content;
+		}
+	}
+snippet ppipacks
+	for my $pack ( @{ $Document->find('PPI::Statement::Package') || [] } ) {
+		for my $include ( @{ $pack->find('PPI::Statement::Include') || [] } ) {
+		}
+	}
+snippet ifok
+	if($res->{ok}){
+		${1}
+	}else{
+		${2}
+	}
+snippet try
+	try { 
+		${1}
+	} catch {
+		${2}
+	} finally {
+		${3}
+	}
+snippet em
+	$em->
+snippet baseacc
+	use base qw(iPTE::Base::Acc);
+
+	BEGIN {
+			my %acc=( 
+				array   => [qw( 
+					a
+				)],
+				hash    => [qw( 
+					h
+				)],
+				scalar  => [qw(
+					s
+				)],
+				integer  => [qw(
+					i
+				)],
+			);
+		
+			__PACKAGE__->add_accessors(\%acc);
+		}
+snippet podstart
+	=head1 NAME
+	
+	${1} - ${2}
+
+	=head1 USAGE
+	
+	=head1 METHODS
+	
+	=head2 ${3}
+	
+	=cut
+snippet doxtable
+	<table>
+		<tr> 
+			<td> ${1} </td>  
+			<td> ${2} </td>  
+		</tr>
+	</table>
+snippet doxtr
+	<tr> ${1} </tr>
+snippet doxtd
+	<td> ${1} </td>
+snippet doxlink
+	@link ${1} @endlink
+snippet forrepo
+	foreach my $REPO (%REPOS){
+		${1}
+	}
+snippet usebase
+	
+	use warnings;
+	use strict;
+	
+# }}}
+# =============================
+snippet import
+	BEGIN {
+		my @i=qw( 
+			registry_get 
+			registry_set
+			os64bit 
+		);
+		use vars map { '*' . $_ } @i; 
+		my $pack="iPTE::Windows";
+		
+		no strict 'refs';
+		for(@i) {
+			*{"$_"}=*{$pack . "::$_"};
+		}
+	}
+snippet ifd
+	if defined ${1}
+snippet #!
+	#!/usr/bin/env perl
+# Hash Pointer
+snippet .
+	 =>
+snippet al
+	_add_line("${1}");
+snippet endl
+	. "\n";
+snippet sys
+	system("${1}");
+snippet ipcrun
+	my %res;
+	
+	unless(IPC::Cmd::can_run($cmd)){
+	}
+	
+	@res{qw( ok error_message full_buf stdout_buf stderr_buf )}=
+		IPC::Cmd::run( command => $cmd, verbose => 0 );
+	
+	foreach my $id (qw( stdout_buf full_buf stderr_buf )) {
+		$res{$id}= [ split("\n",join("",@{$res{$id}})) ];
+	}
+snippet ipcrunforked
+	my $res;
+	
+	if(not IPC::Cmd::can_run($exe)){
+		_die "Cannot run: $exe ";
+	}
+	
+	$res= IPC::Cmd::run_forked( $cmd );
+	
+	if ($res->{exit_code}) {
+		_warn "FAILURE with exit code: " . $res->{exit_code};
+	
+	}else{
+		_say "SUCCESS";
+	
+	}
+snippet texnicelocal
+	sub tex_nice_local() {
+	
+		# Base paper file
+		push(@$pfiles,"p.$bkey.tex");
+		push(@$pfiles,glob("p.$bkey.sec.*.i.tex"));
+	
+		foreach my $piece (@{$config->{include_tex_parts}}) {
+			push(@$pfiles,"p.$bkey.$piece.tex");
+		}
+	
+		#foreach my $file (@$pfiles) {
+			#$file=catfile($texroot,$file);
+		#}
+	
+		foreach my $file (@$pfiles) {
+			File::Slurp::edit_file_lines {
+				s///g;
+			} $file;
+		}
+	}
+snippet vimdbi
+	our($dbh,$sth,$dsn);
+	our $vimdbi;
+	
+	my ($user,$pwd,$db,%attr);
+	
+	$user = 'root';
+	$pwd  = '';
+	
+	$db   = "information_schema";
+	$db  = "хозяйство";
+	
+	%attr=(
+		mysql_enable_utf8 => 1,
+		PrintError        => 1,
+		RaiseError        => 1,
+	);
+	
+	# data source
+	$dsn="DBI:mysql:database=$db;host=localhost";
+	
+	$vimdbi=Vim::Dbi->new(
+		dsn  => $dsn,
+		db   => $db,
+		user => $user,
+		pwd  => $pwd,
+		attr => \%attr,
+	);
+snippet acc
+	use parent qw( Class::Accessor::Complex );
+	
+	###__ACCESSORS_SCALAR
+	our @scalar_accessors=qw(
+	);
+	
+	###__ACCESSORS_HASH
+	our @hash_accessors=qw(
+	);
+	
+	###__ACCESSORS_ARRAY
+	our @array_accessors=qw();
+	
+	__PACKAGE__
+		->mk_scalar_accessors(@scalar_accessors)
+		->mk_array_accessors(@array_accessors)
+		->mk_hash_accessors(@hash_accessors)
+		->mk_new;
+		
+	sub main {
+		my $self=shift;
+		
+		$self->init_vars;
+	}
+	
+	sub init_vars {
+		my $self=shift;
+	}
+	
+snippet packcore
+	# Core {{{
+	
+	# _begin() {{{
+	
+	=head3 _begin()
+	
+	=cut
+	
+	sub _begin() {
+	    my $self = shift;
+	
+	    $self->{package_name} = __PACKAGE__ unless defined $self->{package_name};
+	
+	    $self->accessors(
+	        array    => \@array_accessors,
+	        hash     => \@hash_accessors,
+	        'scalar' => \@scalar_accessors
+	    );
+	
+	}
+	
+	# }}}
+	# get_opt() {{{
+	
+	=head3 get_opt()
+	
+	=cut
+	
+	sub get_opt() {
+	    my $self = shift;
+	
+	    $self->OP::Script::get_opt();
+	
+	}
+	
+	# }}}
+	# init_vars() {{{
+	
+	=head3 init_vars()
+	
+	=cut
+	
+	sub init_vars() {
+	    my $self = shift;
+	
+	    $self->_begin();
+	
+	}
+	
+	# }}}
+	# main() {{{
+	
+	##TODO main
+	
+	sub main() {
+	    my $self = shift;
+	
+	    $self->get_opt();
+	
+	    $self->init_vars();
+	
+	    $self->run();
+	
+	}
+	
+	# }}}
+	# new() {{{
+	
+	sub new() {
+	    my $self = shift;
+	
+	    $self->OP::Script::new();
+	
+	}
+	
+	# }}}
+	# run() {{{
+	
+	##TODO run
+	
+	sub run() {
+	    my $self = shift;
+	
+	}
+	
+	# }}}
+	# set_these_cmdopts() {{{
+	
+	=head3 set_these_cmdopts()
+	
+	=cut
+	
+	sub set_these_cmdopts() {
+	    my $self = shift;
+	
+	    $self->OP::Script::set_these_cmdopts();
+	
+	    my $opts = [];
+	    my $desc = {};
+	
+	    push(
+	        @$opts,
+	        {
+	            name => "shcmds",
+	            desc => "Run command(s), then exit",
+	            type => "s"
+	        },
+	    );
+	
+	    $self->add_cmd_opts($opts);
+	
+	}
+	
+	# }}}
+	
+	# }}}
+
+snippet say
+	$self->_say(@say);
+snippet runforked
+	my $opts={
+		discard_output => 1,
+		stdout_handler => sub {},
+		stderr_handler => sub {},
+	};
+	
+	my $res = IPC::Cmd::run_forked( $CMD, $opts );
+	
+	if (not $res->{exit_code}) {
+		_say 'Install.sh OK';
+	}else{
+		_say 'Install.sh FAIL';
+		_say '  Exit code ' . $res->{exit_code};
+	}
+	
+snippet rmw
+	=~ s/^\s*(.*?)\s*$/\$1/g;
+snippet forl
+	foreach (@lines){
+		chomp;
+		next if /^\s*#/;
+			${1}
+	}
+# POD
+snippet he3
+	=head3 ${1}
+
+	=cut
+snippet he2
+	=head2 ${1}
+snippet he4
+	=head4 ${1}
+snippet he1
+	=head1 ${1}
+
+	=cut
+snippet sl
+	$self->${1}
+snippet mss
+	my $self=shift;
+snippet fbs
+	$FindBin::Script
+snippet fbb
+	$FindBin::Bin
+snippet we
+	while(my($k,$v)=each %{${1}}){
+		${2}
+	}
+# Open a dat file  and read in a single column into an array
+snippet opd
+	 open(FILE,"<${1}") || die $!;
+	 my @vars;
+	 while(<FILE>){
+	 	chomp;
+	 	s/^\s*//g;
+	 	s/\s*$//g;
+	 	next if (/^\s*#/ || /^\s*$/ );
+	 	my $line=$_;
+	 	my @F=split(' ',$line);
+	 	push(@vars,@F);
+	 }
+	 close(FILE);
+snippet readdir
+	opendir(DIR,"") || die $!;
+	while(my $file=readdir(DIR)){
+		local $_=$file;
+		${1}
+	}
+	closedir(DIR);
+# Open and Read File
+snippet op
+	my @out;
+	open(F,"<${1}") || die $!;
+	while(<F>){
+		chomp;
+		my $line=$_;
+		push @out,$line;
+		print $line . "\n";
+	}
+	close(F);
+# Open File for writing
+snippet opw
+	open(F,">${1}") || die $!;
+		${2}
+	close(F);
+snippet our
+	=item * C<${1}> (${2}) ${3}
+	
+	=cut
+	our ${1};
+# Function
+snippet sub
+	sub ${1} {
+		my ($self,$ref) = @_;
+		
+		$self;
+	}
+snippet suub
+	# <++> () {{{
+
+	=head3 <++> () {{{
+
+	=cut
+
+	sub ${1:function_name}() {
+		my $self=shift;
+
+		${2:#body ...}
+	}
+	# }}}
+# Conditional
+snippet if
+	if (${1}) {
+		${2:# body...}
+	}
+# Conditional if..else
+snippet ife
+	if (${1}) {
+		${2:# body...}
+	}
+	else {
+		${3:# else...}
+	}
+# Conditional if..elsif..else
+snippet ifee
+	if (${1}) {
+		${2:# body...}
+	}
+	elsif (${3}) {
+		${4:# elsif...}
+	}
+	else {
+		${5:# else...}
+	}
+# Conditional One-line
+snippet xif
+	${1:expression} if ${2:condition};${3}
+# Unless conditional
+snippet unless
+	unless (${1}) {
+		${2:# body...}
+	}
+snippet unlessref
+	unless(ref $ref){
+		${1}
+	}elsif(ref $ref eq "ARRAY"){
+		${2}
+	}elsif(ref $ref eq "HASH"){
+		${3}
+	}
+# For input options checking
+snippet todo
+	##TODO ${1}
+snippet unref
+	unless (ref $ref) {
+		${2:# body...}
+	}elsif(ref $ref eq "HASH"){
+		#while(my($k,$v)=each %{$ref}){
+			#foreach($k){
+				#/^$/ && do { 1; next; };
+			#}
+		#}
+		while(my($k,$v)=each %{$ref}){
+			$opts->{$k}=$ref->{$k};
+		}
+	}elsif(ref $ref eq "ARRAY"){
+		${2:# body...}
+	}	
+# Unless conditional One-line
+snippet xunless
+	${1:expression} unless ${2:condition};${3}
+# Try/Except
+snippet jsonencode
+	JSON::XS->new->pretty(1)->encode(${1});
+snippet eval
+	eval { ${1:# do something risky...} };
+	if ($@) {
+		$self->_warn(${2});
+		${3:# handle failure...}
+	}
+snippet ev
+	my @evs;
+	
+	push(@evs,'');
+	
+	eval(join(";\n",@evs));
+	die $@ if $@;
+# While Loop
+snippet wh
+	while (${1}) {
+		${2:# body...}
+	}
+# While Loop One-line
+snippet xwh
+	${1:expression} while ${2:condition};${3}
+# C-style For Loop
+snippet cfor
+	for (my $${2:var} = 0; $$2 < ${1:count}; $$2${3:++}) {
+		${4:# body...}
+	}
+# For loop one-line
+snippet xfor
+	${1:expression} for @${2:array};${3}
+# Foreach Loop
+snippet for
+	foreach my $${1:x} (@${2:array}) {
+		${3:# body...}
+	}
+snippet pfor
+	print "$_" . "\n" for($self-><++>);
+# Foreach Loop One-line
+snippet fore
+	${1:expression} foreach @${2:array};${3}
+snippet fori
+	for(my $i=0 ; $i< ; $i++ ){
+	}
+snippet forn
+	for(${1:var}){
+		/^${2}$/ && do {
+			${3}
+			next;
+		};
+	}
+snippet fork
+	foreach my $k(keys %${1}){
+		${1}
+	}
+# Package
+snippet packmain
+	sub init_vars {
+	}
+	sub main {
+		init_vars;
+		get_opt;
+		run;
+	}
+	sub get_opt {
+	}
+	sub run {
+	}
+snippet cl
+	package ${1:ClassName};
+
+	use base qw(${2:ParentClass});
+
+	sub new {
+		my $class = shift;
+		$class = ref $class if ref $class;
+		my $self = bless {}, $class;
+		$self;
+	}
+
+	1;${3}
+# Open and In-place edit File
+snippet ef
+	edit_file_lines {
+		${1}
+	} $file;
+snippet editfile
+	my @lines = read_file $file;
+	
+	foreach (@lines) {
+	  chomp;
+	  next if /^\s*#/;
+	}
+	write_file($file,join("\n",@lines) . "\n");
+#snippet ef
+ # open(F,"<${1}") || die $!;
+	#open(N,">${2}.n") || die $!;
+	#while(<F>){
+		#chomp;
+		#my $line=$_;
+		#$line =~ s/${3}/${4}/g;
+		#print N "$line\n";
+	#}
+	#move("${5}.n","${6}");
+	#close(F);
+	#close(N);
+# eoos
+snippet eoo
+	&eoos("${1}\n");
+snippet mado
+	/${1}/ && do {
+		${2}
+		next;
+	};
+snippet mref
+	my $ref=shift // '';
+# parr
+snippet parr
+	print "$_\n" for(@${1});
+# print
+snippet sock
+	socket(SOCKET, PF_INET, SOCK_STREAM, $proto)   || die "socket: $!";
+	connect(SOCKET, $hispaddr)          || die "bind: $!";
+snippet pr
+	print ${1} . "\n";
+snippet usedd
+	use Data::Dumper qw(Dumper);
+snippet prd
+	use Data::Dumper qw(Dumper);
+	
+	print Dumper(${1});
+	exit 0;
+snippet prj
+	print join("\n",@$msg) . "\n";
+# Read File  (Slurp)
+snippet printarr
+	print "$_\n" for(@${1});
+snippet slurp
+	my $${1:var};
+	{ 
+		local $/ = undef; 
+		local *FILE; 
+		open FILE, "<${2:file}" || die $!;  
+		$$1 = <FILE>; 
+		close FILE 
+	}${3}
+snippet eof
+	print << "eof";
+	eof
+snippet br
+	{
+		${1}
+	}
+snippet getopt
+	our(%OPT,@OPTSTR,%OPTDESC);
+	our($CMDLINE);
+	      
+	sub get_opt {
+		
+		Getopt::Long::Configure(qw(bundling no_getopt_compat no_auto_abbrev no_ignore_case_always));
+		
+		@OPTSTR=( "what=s","texfile=s" );
+		
+		%OPTDESC=(
+			"help"  => "Display help message",
+			"man"   => "Display man page",
+		);
+		
+		unless( @ARGV ){ 
+			dhelp;
+			exit 0;
+		}else{
+			$CMDLINE=join(' ',@ARGV);
+			GetOptions(\%OPT,@OPTSTR);
+		}
+  }
+snippet getoptbase
+	sub getopt {
+		my $self=shift;
+	
+		my @optstr=qw(
+			run|r
+			anew
+		);
+	
+		$self->optstr_set([@optstr]);
+	
+		$self->base_getopt;
+	
+	}
+	
+	sub getopt_apply {
+		my $self=shift;
+	
+		$self->base_getopt_apply;
+	
+	}
+snippet wa
+	wantarray ? @<++> : \@<++> ;
+snippet rf
+	my @lines=read_file $file;
+snippet retu
+	return '' unless ${1};
+snippet wf
+	write_file($file,join("\n",@lines) . "\n");
+snippet say
+	$self->say("${1}");
+snippet usefindbin
+	use FindBin qw($Bin $Script);
+snippet useopbase
+	use OP::Base qw( :vars :funcs );
+snippet usevimperl
+	use Vim::Perl qw( :vars :funcs );
+snippet usefilecopy
+	use File::Copy qw(copy move);
+snippet usedatadumper
+	use Data::Dumper qw(Dumper);
+snippet usegetoptlong
+	use Getopt::Long;
+snippet savetovh
+	my $htw=HTML::Work->new;
+
+	my ($in_html,$out_vh,$tag,$actions,$xpath_rm,$xpath_cb);
+
+	$in_html  = <++>;
+	$out_vh   = <++>;
+	$tag      = <++>;
+	$actions  = <++>;
+	$xpath_rm = <++>;
+	$xpath_cb = <++>;
+
+	my $vhref={
+		# input HTML file
+		in_html => $in_html,
+		# output VimHelp file
+		out_vh  => $out_vh,
+		# head Vim tag (to be enclosed as *TAG* at the top of the outcome VimHelp file )
+		tag 	=> $tag,
+		# possible additional actions, may include
+		# 	replace_a - replace all links with text
+		# 	replace_pre - replace <pre> tags with their content
+		actions => $actions || [],
+		# xpath to select elements to be removed
+		xpath_rm => $xpath_rm || [],
+		# xpath callbacks
+		xpath_cb => $xpath_cb || [],
+	};
+
+	$htw->save_to_vh($vhref);
+snippet mkp
+	mkpath <++> unless -d <++>;
+snippet usefilepath
+	use File::Path qw(make_path remove_tree mkpath rmtree);
+snippet usefp
+	use File::Path qw(make_path remove_tree mkpath rmtree);
+snippet htmlstrip
+	my $hs = HTML::Strip->new();
+	my $clean_text = $hs->parse( $html );
+	print $clean_text . "\n";
+	$hs->eof;
+snippet usefb
+	use File::Basename qw(basename dirname);
+snippet usefilebasename
+	use File::Basename qw(basename dirname);
+snippet usedumper
+	use Data::Dumper;
+snippet sp
+	split('${1}',${2});
+snippet j
+	join("${1}",${2});
+snippet jn
+	join("\n",${1});
+snippet usefileslurp
+	use File::Slurp qw(
+	  append_file
+	  edit_file
+	  edit_file_lines
+	  read_file
+	  write_file
+	  prepend_file
+	);
+snippet usefilespecfunctions
+	use File::Spec::Functions qw(catfile rel2abs curdir catdir );
+snippet scriptgetopt
+	sub get_opt {
+	    
+	    Getopt::Long::Configure(
+	        qw(bundling no_getopt_compat no_auto_abbrev no_ignore_case_always));
+	
+	    @OPTSTR = ( "list=s", "print=s", "target=s" );
+	
+	    if ( !@ARGV ) {
+	        dhelp();
+	        exit 1;
+	    }
+	    else {
+	        GetOptions( \%OPT, @OPTSTR );
+	    }
+	}
+snippet subinitvars
+	sub init_vars {
+		${1}
+	}
+snippet htw
+	use HTML::Work;
+	
+	my $htw=HTML::Work->new(
+		html => $html,
+	);
+snippet htwdownloadsite
+	$htw->download_site({
+		savedir => $savedir,
+		root    => $root,
+		bname   => 'index',
+		proto   => $proto,
+	});
+snippet xml libxml_load_xml
+	my $prs = XML::LibXML->new;
+
+	open my $fh, '<', $<++>;
+	binmode $fh;
+	my $inp={
+		IO          	=> $fh,
+		recover         => 1,
+		suppress_errors => 1,
+	};
+	my $dom = $prs->load_xml(%$inp);
+	close $fh;
+
+	# save
+	open my $out, '>', 'out.xml';
+	binmode $out; # as above
+	$dom->toFH($out);
+snippet subinit
+	sub init {
+		my $self=shift;
+	
+		my $h={};
+			
+		my @k=keys %$h;
+	
+		for(@k){ $self->{$_} = $h->{$_} unless defined $self->{$_}; }
+	}
+snippet submain
+	sub main {
+		my $self=shift;
+		${1}
+	}
+snippet cp
+	File::Copy::copy(${1},${2});
+snippet mv
+	File::Copy::move(${1},${2});
+snippet ifgrep
+	if(grep { /^ $/ } ){
+	}
+snippet packexport
+	use warnings;
+	use strict;
+	
+	use Exporter ();
+	use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
+	
+	$VERSION = '0.01';
+	@ISA     = qw(Exporter);
+	
+	@EXPORT      = qw();
+	
+	###export_vars_scalar
+	my @ex_vars_scalar=qw(
+	);
+	###export_vars_hash
+	my @ex_vars_hash=qw(
+	);
+	###export_vars_array
+	my @ex_vars_array=qw(
+	);
+	
+	%EXPORT_TAGS = (
+	###export_funcs
+	'funcs' => [qw( 
+	)],
+	'vars'  => [ @ex_vars_scalar,@ex_vars_array,@ex_vars_hash ]
+	);
+	
+	our @EXPORT_OK = ( @{ $EXPORT_TAGS{'funcs'} }, @{ $EXPORT_TAGS{'vars'} } );
+	
+	our @EXPORT  = qw( );
+	
+	our $VERSION = '0.01';
+snippet subnew
+	sub new
+	{
+		my ($class, %opts) = @_;
+		my $self = bless (\%opts, ref ($class) || $class);
+
+		$self->init if $self->can('init');
+
+		return $self;
+	}
+snippet packnew
+	package OP::ConvBib;
+	
+	use strict;
+	use warnings;
+	
+	sub new
+	{
+	    my ($class, %opts) = @_;
+	    my $self = bless (\%opts, ref ($class) || $class);
+	    return $self;
+	}
+	
+	1;
+# VIM interaction
+snippet vimmsg
+	VimMsg("${1}");
+snippet vimcmd
+	VimCmd("${1}");
+snippet vimev
+	VimEval("${1}");
+snippet podover
+	=over 4
+	
+	=item * ${1}
+	
+	=back
+snippet poditem
+	=item ${1}
+snippet item
+	=item ${1}
+snippet over
+	=over 4
+	
+	=item * ${1}
+	
+	=back
+snippet it
+	=item ${1}
+snippet ifref
+	if (ref $ref eq "ARRAY"){
+		${1}
+	}elsif(ref $ref eq "HASH"){
+		${2}
+	}
+snippet opendir
+	opendir(D,"${1}") || die $!;
+	while(my $file=readdir(D)){
+		local $_=$file;
+		my $path = catfile($dir,$file);
+		${2};
+	}
+	closedir(D);
+snippet catroot
+	catfile($self->texroot,${1});
+snippet catf
+	catfile(${1},${2});
+snippet cf
+	catfile(${1},${2});
+snippet evs
+	my $evs="${1}";
+snippet usetermansicolor
+	use Term::ANSIColor;
+snippet usecgi
+	use CGI qw(:standard :html3);
+snippet usefeature
+	use feature qw(${1});
+snippet sw
+	switch(${1}){
+		case(${2}) {${3} }
+	}
+snippet given
+	given(${1}){
+		when(${2}) {${3} }
+		default { }
+	}
+snippet nif
+	next if ${1};
+snippet lwp
+	use LWP;
+	use HTTP::Request;
+	
+	my $ua=LWP::UserAgent->new();	
+	my $req=HTTP::Request->new(POST => $uri);	
+	$req->headers('content-type' => 'application/json');
+	
+	my $res=$ua->request($req);
+	$res->is_success ? $res->content : undef;
+snippet sr
+	sub <++> { 
+		my ($self,$ref)=@_;
+	}
+snippet testnew
+	#!/usr/bin/env perl
+	
+	use strict;
+	use warnings;
+	
+	use FindBin qw( $Bin $Script );
+	use Test::More;
+	
+	use lib("$Bin/../lib");
+	use OP::HTML::Tests qw(do_tests ok_lines @TESTS $H);
+	
+	###subs
+	sub main;
+	sub init_vars;
+	sub test_head;
+	
+	main;
+	
+	sub main {
+		init_vars;
+		do_tests;
+	}
+	
+	sub init_vars {
+	
+	 @TESTS=qw( frames );
+	
+	 foreach my $test (@TESTS) {
+	    eval '*OP::HTML::Tests::test_' . $test . '=*test_' . $test;
+	    warn $@ if $@;
+	 }
+	
+	}
+	
+	sub test_frames {
+	    my $reftext;
+	
+	    $H->_clear;
+	    $reftext = << 'EOF';
+	<frameset cols='25%,75%'>
+	 <frame src='SRC1' name='NAME1'>
+	 <frame src='SRC2' name='NAME2'>
+	</frameset>
+	EOF
+	
+	    $H->frameset({ 
+	            cols => '25%,75%',
+	            frames => [ 
+	                { src => 'SRC1', name => 'NAME1 '},
+	                { src => 'SRC2', name => 'NAME2 '},
+	            ],
+	    });
+	
+	    ok($H->text eq "$reftext"  , 'head> TITLE ' );
+	
+	}
+snippet accarr
+	###def_accessors_array
+	BEGIN 
+	{
+		no strict 'refs';
+		no warnings;
+		
+		my @arr=qw();
+		
+		foreach my $id (@arr){
+			my ($push,$get,$size,$clear);
+	
+			$push = sub {
+				my $self=shift;
+	
+				@{$self->{$id}}=( @{$self->{$id} || []},@_ ); 
+			};
+	
+			$clear = sub {
+				my $self=shift;
+	
+				$self->{$id}=[]; 
+			};
+	
+			$get = sub {
+				my $self=shift;
+	
+				my @i=@_;
+	
+				my @a = @{ $self->{$id} || []}; 
+	
+				@a = @a[@i] if @i;
+	
+				return @a;
+			};
+	
+			$size = sub {
+				my $self=shift;
+	
+				my @a = @{ $self->{$id} || []}; 
+	
+				return scalar @a;
+			};
+	
+			*{__PACKAGE__ . "::$id" . "_push"} = $push;
+			*{__PACKAGE__ . "::$id" . "_size"} = $size;
+			*{__PACKAGE__ . "::$id" . "_clear"} = $clear;
+			*{__PACKAGE__ . "::$id"} = $get;
+		}
+	}
+snippet autoload
+	sub AUTOLOAD {
+		my $se=shift;
+		
+		my $name = $AUTOLOAD;
+		return if $name =~ /^.*::[A-Z]+$/;
+			$name =~ s/^.*:://;
+		
+		my $sub;
+		for($name){
+		/^sleep_(\d+)$/ && do {
+			my $sleep=$1;
+				$sub = sub
+			{
+				sleep $sleep;
+				$se->_say(
+					$se->{delimstr} || '-' x 50,
+					'Sender sleeping for '.$sleep. ' secs',
+					$se->{delimstr} || '-' x 50,
+				);
+			};
+			next;
+		};
+		}
+			
+	  	no strict 'refs';
+	  	*{$AUTOLOAD} = $sub;
+	  	use strict 'refs';
+	  	goto &{$sub};
+			
+	}
+snippet repe
+	$P->report_error(${1}) if $P;
+snippet table
+	{
+		my $ref={ 
+			fields 				=> $fields, 
+			widths				=> $widths,
+			data_rows_hash  	=> $self->makereqs_ref,
+			opts4new			=> 
+			{ 
+				-width => "100%",
+				-class => 'tablesorter',
+			},
+			html_encode         => [qw(content req_headers req_content)],
+			disable_html_encode => [qw(req_headers req_content)],
+		};
+	
+		$self->_html_add_table($ref);
+	}
+snippet uuid
+	my $uuid = ($P) ? $P->uuid() : '';
+snippet filestat
+	use File::stat;
+	my $st=stat($file);
+	my $mtime=$st->mtime;
+snippet ao
+	ActiveOptimization
+snippet dhq
+	################################################################################
+	#
+	# Copyright © 2015 - 2016 PC Drivers HeadQuarters LP.
+	# All rights reserved.
+	#
+	# This material, including documentation and any related computer programs,
+	# is protected by copyright controlled by PC Drivers HeadQuarters LP. All rights are reserved.
+	# Copying, including reproducing, storing, adapting or translating, any or all
+	# of this material requires the prior written consent of PC Drivers HeadQuarters. This material
+	# also contains confidential information which may not be disclosed to others
+	# without the prior written consent of PC Drivers HeadQuarters.
+	#
+	################################################################################
+snippet opr
+	$fh = new IO::File;
+	if ($fh->open("<file")) {
+		print <$fh>;
+		$fh->close;
+	}
+snippet htmlwork save_to_vh
+	my $vhref={
+		# input HTML file
+		in_html => $in_html,
+		# output VimHelp file
+		out_vh  => $out_vh,
+		# head Vim tag (to be enclosed as *TAG* at the top of the outcome VimHelp file )
+		tag 	=> $tag,
+		# possible additional actions, may include
+		# 	replace_a - replace all links with text
+		actions => $actions || [],
+		# xpath to select elements to be removed
+		xpath_rm => $xpath_rm || [],
+		# xpath callbacks
+		xpath_cb => $xpath_cb || [],
+	};
+
+	$htw->save_to_vh($vhref);

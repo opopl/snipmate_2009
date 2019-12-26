@@ -1,0 +1,18 @@
+snippet ifne
+	if not exists
+snippet ife
+	if exists
+snippet utf
+	COLLATE utf8_unicode_ci
+snippet insert
+	insert into ${1:table} (${2:fields}) values (${3:values});
+snippet ai
+	auto_increment
+snippet pk
+	primary key(${1})
+snippet ct
+	create table if not exists ${1} (
+		`id` int(11) not null auto_increment,
+		${2}
+	);
+	

@@ -1,0 +1,18 @@
+snippet mktex
+	PROJ:=<++>
+	include ~/scripts/mk/maketex.mk
+snippet for
+	for ${1:var} in $(${2:vars}); \
+		do \
+		${3:action} $${<++>}  ; \
+	done ;
+snippet patsubst
+	$(patsubst ${1:pattern},${2:replacement},${3:text})
+snippet forproj
+	for proj in $(mkprojects); do \
+		${3:action} $${proj}  ; \
+	done ;
+snippet if
+	if [ ${1} ]; then \
+		${2} ; \
+	fi ;

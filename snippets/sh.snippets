@@ -1,0 +1,57 @@
+# #!/bin/bash
+snippet #!
+	#!/bin/bash
+	
+snippet if
+	if [[ ${1:condition} ]]; then
+		${2:#statements}
+	fi
+snippet elif
+	elif [[ ${1:condition} ]]; then
+		${2:#statements}
+snippet for
+	for (( ${2:i} = 0; $2 < ${1:count}; $2++ )); do
+		${3:#statements}
+	done
+snippet forin
+	for ${1} in ${2}; do
+		${2}
+	done
+snippet wh
+	while [[ ${1:condition} ]]; do
+		${2:#statements}
+	done
+snippet until
+	until [[ ${1:condition} ]]; do
+		${2:#statements}
+	done
+snippet case
+	case ${1:word} in
+		${2:pattern})
+			${3};;
+	esac
+snippet insperl
+	perl Makefile.PL && make && make test && make install
+	perl Build.PL && Build && Build test && Build install
+snippet compreply
+	################# START COMPREPLY##########################
+	if [[ $TERM == 'screen' ]]; then
+		for opt in ${opts}; do 
+		  ### if match at the beginning
+		  r=0
+		  if [ -z $cur ]; then
+		  	r=1
+		  else
+			  if [ ! ${opt##$cur} == $opt ]; then
+			  	r=1
+			  fi
+		  fi
+		
+		  if (( $r )); then
+		  	COMPREPLY=( ${COMPREPLY[@]} $opt  )
+		  fi
+		done
+	else
+		COMPREPLY=( $( compgen -W "${opts}" -- ${cur}) )
+	fi
+	################# END COMPREPLY ###########################
