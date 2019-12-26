@@ -295,6 +295,6 @@ fun! ShowAvailableSnips()
 endf
 
 command! -nargs=* -complete=custom,snipMate#complete#snips_all SnippetView call snipMate#SnippetView(<f-args>) 
-command! -nargs=* -complete=custom,snipMate#complete#snippets SnipIns call snipMate#SnippetInsert(<f-args>) 
+command! -nargs=* -complete=custom,snipMate#complete#snippetNames SnipIns call snipMate#SnippetInsert(<f-args>) 
 
 " vim:noet:sw=4:ts=4:ft=vim
